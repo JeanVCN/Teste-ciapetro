@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  postgres:
+    env_file: ./postgres.env
+    image: postgres:12
+    networks:
+      - pg-network
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./postgres-deploy-scripts:/docker-entrypoint-initdb.d
+
+  pgadmin4:
+    depends_on:
+      - postgres
+    env_file: ./pgadmin4.env
+    image: dpage/pgadmin4:latest
+    networks:
+      - pg-network
+    ports:
+      - "8000:80"
+    restart: unless-stopped
+
+networks:
+  pg-network:
+    driver: bridge
