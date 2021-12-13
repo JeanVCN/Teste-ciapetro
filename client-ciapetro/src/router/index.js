@@ -11,7 +11,6 @@ const routes = [
   {
     path: "/convertermoeda",
     name: "convertermoeda",
-    meta: { title: "Conversao" },
 
     component: () =>
       import(
@@ -21,7 +20,6 @@ const routes = [
   {
     path: "/consultarhistorico",
     name: "consultarhistorico",
-    meta: { title: "Historico" },
 
     component: () =>
       import(
@@ -29,9 +27,8 @@ const routes = [
       ),
   },
   {
-    path: "/dadoscotacao",
+    path: "/dadoscotacao/:id",
     name: "dadoscotacao",
-    meta: { title: "Dados Cotação" },
 
     component: () =>
       import(

@@ -2,7 +2,7 @@
   <v-container>
     <v-card>
       <v-card-title>
-        <v-row>
+        <v-row align="center">
           <v-col cols="auto">
             <v-btn :to="{ name: 'convertermoeda' }" outlined>Nova cotação</v-btn>
           </v-col>
@@ -11,9 +11,10 @@
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
+          label="Buscar"
+          hide-details="auto"
+          outlined
+          dense
         ></v-text-field>
       </v-card-title>
       <v-card-text>
@@ -39,21 +40,25 @@ export default {
       ],
       items: [
         {
+          id: 1,
           referencia: 'Dolar',
           cotacao: 'Real',
           data: '12/12/2021-17:18'
         },
         {
+          id: 2,
           referencia: 'Dolar',
           cotacao: 'Real',
           data: '12/12/2021-17:18'
         },
         {
+          id: 3,
           referencia: 'Dolar',
           cotacao: 'Real',
           data: '12/12/2021-17:18'
         },
         {
+          id: 4,
           referencia: 'Dolar',
           cotacao: 'Real',
           data: '08/12/2021-17:18'

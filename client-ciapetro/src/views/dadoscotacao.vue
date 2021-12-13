@@ -2,11 +2,11 @@
   <v-container>
     <v-card>
       <v-card-title>
-        <v-row>
+        <v-row align="center">
           <v-col cols="auto">
             <v-btn :to="{ name: 'consultarhistorico' }" outlined>Histórico</v-btn>
           </v-col>
-          <v-col>Dados detalhados</v-col>
+          <v-col>Dados detalhados {{ $route.params.id }}</v-col>
         </v-row>
       </v-card-title>
       <v-card-text>
