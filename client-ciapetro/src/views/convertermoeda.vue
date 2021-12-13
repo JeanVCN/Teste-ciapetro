@@ -22,6 +22,7 @@
               hide-details="auto"
               outlined
               dense
+              @change="converter"
               v-model="referencia"
             />
           </v-col>
@@ -34,6 +35,7 @@
               hide-details="auto"
               outlined
               dense
+              @change="converter"
               v-model="moedaconversao"
             />
           </v-col>
@@ -41,11 +43,18 @@
             <v-text-field
               label="Resultado"
               hide-details="auto"
-              :value="resultadoconversao"
+              :value="resultado"
               outlined
               dense
               readonly
             />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-alert v-if="error" color="red lighten-2" dark>
+              {{ error }}
+            </v-alert>
           </v-col>
         </v-row>
       </v-card-text>
@@ -63,6 +72,8 @@ export default {
       referencia: "",
       moedaconversao: "",
       moedas: [],
+      resultado: "",
+      error: "",
     };
   },
   computed: {
@@ -71,17 +82,6 @@ export default {
     },
     moedasconversao() {
       return this.moedas.filter((moeda) => moeda.codigo != this.referencia);
-    },
-    resultadoconversao() {
-      const moedareferencia = this.moedas.find(
-        (moeda) => moeda.codigo == this.moedaconversao
-      );
-      const moedaconversao = this.moedas.find(
-        (moeda) => moeda.codigo == this.referencia
-      );
-      if (!moedareferencia || !moedaconversao) return "";
-
-      return moedareferencia.valor.toString() + " " + moedaconversao.nome;
     },
   },
   created() {
@@ -93,13 +93,27 @@ export default {
       this.moedas = resposta.data;
     },
     async converter() {
-      const resposta = await api.get("/converter", {
-        params: {
-          referencia: this.referencia,
-          moeda: this.moedaconversao,
-        },
-      });
-      this.resultado = resposta.data;
+      try {
+        if (!this.referencia || !this.moedaconversao) return;
+        const resposta = await api.get("/converter", {
+          params: {
+            referencia: this.referencia,
+            moeda: this.moedaconversao,
+          },
+        });
+        this.resultado = resposta.data.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: this.moedaconversao,
+          currencyDisplay: "symbol",
+        });
+        this.error = "";
+      } catch (error) {
+        if (error.response) {
+          this.error = error.response.data;
+        } else {
+          this.error = "erro desconhecido";
+        }
+      }
     },
   },
 };

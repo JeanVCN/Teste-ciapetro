@@ -4,22 +4,26 @@ const router = express.Router();
 
 router.get("/converter", async function (req, res, next) {
   try {
-    const resposta = await api.get("/convert", {
+    const { referencia, moeda } = req.query;
+    const resposta = await api.get("/live", {
       params: {
-        from: "EUR",
-        to: "GBP",
+        source: referencia,
+        currencies: moeda,
         amount: 100,
       },
     });
-    const { success, currencies } = resposta.data;
+    const { success, error, quotes } = resposta.data;
     if (success) {
-      const moedas = Object.keys(currencies).map((codigo) => ({
-        codigo,
-        nome: currencies[codigo],
-      }));
-      return res.json(moedas);
+      const resultado = quotes[`${referencia}${moeda}`];
+      return res.json(resultado);
     } else {
-      return res.status(500).end();
+      if (error.code === 105) {
+        return res
+          .status(403)
+          .json("Este recurso não está disponível no plano gratuito");
+      } else {
+        return res.status(500).json("Ocorreu um erro na requisição");
+      }
     }
   } catch (error) {
     next(error);
