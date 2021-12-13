@@ -1,46 +1,53 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-btn :to="{ name: 'consultarhistorico' }" outlined>Histórico</v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-select
-          item-text="nome"
-          item-value="id"
-          :items="moedasreferencia"
-          label="Moeda de Referencia"
-          hide-details="auto"
-          outlined
-          dense
-          v-model="referencia"
-        />
-      </v-col>
-      <v-col>
-        <v-select
-          item-text="nome"
-          item-value="id"
-          :items="moedasconversao"
-          label="Moeda para cotação"
-          hide-details="auto"
-          outlined
-          dense
-          v-model="moedaconversao"
-        />
-      </v-col>
-      <v-col>
-        <v-text-field
-          label="Resultado"
-          hide-details="auto"
-          :value="resultadoconversao"
-          outlined
-          dense
-          readonly
-        />
-      </v-col>
-    </v-row>
+    <v-card>
+      <v-card-title>
+        <v-row>
+          <v-col cols="auto">
+            <v-btn :to="{ name: 'consultarhistorico' }" outlined>Histórico</v-btn>
+          </v-col>
+          <v-col>Realizar cotação</v-col>
+        </v-row>
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-select
+              item-text="nome"
+              item-value="id"
+              :items="moedasreferencia"
+              label="Moeda de Referencia"
+              hide-details="auto"
+              outlined
+              dense
+              v-model="referencia"
+            />
+          </v-col>
+          <v-col>
+            <v-select
+              item-text="nome"
+              item-value="id"
+              :items="moedasconversao"
+              label="Moeda para cotação"
+              hide-details="auto"
+              outlined
+              dense
+              v-model="moedaconversao"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              label="Resultado"
+              hide-details="auto"
+              :value="resultadoconversao"
+              outlined
+              dense
+              readonly
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 

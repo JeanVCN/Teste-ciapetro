@@ -28,6 +28,16 @@ const routes = [
         /* webpackChunkName: "consultarhistorico" */ "../views/consultarhistorico.vue"
       ),
   },
+  {
+    path: "/dadoscotacao",
+    name: "dadoscotacao",
+    meta: { title: "Dados Cotação" },
+
+    component: () =>
+      import(
+        /* webpackChunkName: "dadoscotacao" */ "../views/dadoscotacao.vue"
+      ),
+  },
 ];
 
 const router = new VueRouter({
