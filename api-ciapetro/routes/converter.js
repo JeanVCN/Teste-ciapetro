@@ -1,5 +1,7 @@
 const express = require("express");
 const api = require("../services/api");
+const historico = require("../lib/Model/historico");
+const { Model, STRING, DECIMAL, DATE } = require("sequelize/dist");
 const router = express.Router();
 
 router.get("/converter", async function (req, res, next) {
@@ -13,8 +15,9 @@ router.get("/converter", async function (req, res, next) {
       },
     });
     const { success, error, quotes } = resposta.data;
+    const resultado = quotes[`${referencia}${moeda}`];
     if (success) {
-      const resultado = quotes[`${referencia}${moeda}`];
+      historico.create({ referencia, moeda, valor: resultado });
       return res.json(resultado);
     } else {
       if (error.code === 105) {
