@@ -6,6 +6,8 @@ var logger = require("morgan");
 
 var moedasRouter = require("./routes/moedas");
 var converterRouter = require("./routes/converter");
+var historicosRouter = require("./routes/historicos");
+var historicoRouter = require("./routes/historico");
 
 var app = express();
 app.use(cors());
@@ -17,4 +19,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(moedasRouter);
 app.use(converterRouter);
+app.use(historicosRouter);
+app.use(historicoRouter);
 module.exports = app;

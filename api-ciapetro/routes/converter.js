@@ -6,29 +6,37 @@ const router = express.Router();
 
 router.get("/converter", async function (req, res, next) {
   try {
-    const { referencia, moeda } = req.query;
+    let { referencia, moeda } = req.query;
+    if (Array.isArray(moeda)) moeda = moeda.join(", ");
     const resposta = await api.get("/live", {
       params: {
         source: referencia,
         currencies: moeda,
-        amount: 100,
       },
     });
     const { success, error, quotes } = resposta.data;
-    const resultado = quotes[`${referencia}${moeda}`];
     if (success) {
-      historico.create({ referencia, moeda, valor: resultado });
-      return res.json(resultado);
+      historico.create({
+        referencia,
+        moeda,
+        resultados: JSON.stringify(quotes),
+      });
+      return res.json(quotes);
     } else {
+      console.log(resposta.data);
       if (error.code === 105) {
         return res
           .status(403)
-          .json("Este recurso não está disponível no plano gratuito");
-      } else {
-        return res.status(500).json("Ocorreu um erro na requisição");
+          .json("O seu plano só disponibiliza o USD como moeda de referencia");
+      } else if (error.code === 106) {
+        return res
+          .status(403)
+          .json("Você atingiu o limite de conversões do plano gratuito");
       }
+      return res.status(500).json("Ocorreu um erro na requisição");
     }
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });

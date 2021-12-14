@@ -4,7 +4,9 @@
       <v-card-title>
         <v-row align="center">
           <v-col cols="auto">
-            <v-btn :to="{ name: 'convertermoeda' }" outlined>Nova cotação</v-btn>
+            <v-btn :to="{ name: 'convertermoeda' }" outlined
+              >Nova cotação</v-btn
+            >
           </v-col>
           <v-col>Histórico de cotações</v-col>
         </v-row>
@@ -20,7 +22,14 @@
       <v-card-text>
         <v-data-table :headers="headers" :items="items" :search="search">
           <template v-slot:item.info="{ item }">
-            <v-btn :to="{ name: 'dadoscotacao', params: { id: item.id } }" outlined>Dados detalhados</v-btn>
+            <v-btn
+              :to="{ name: 'dadoscotacao', params: { id: item.id } }"
+              outlined
+              >Dados detalhados</v-btn
+            >
+          </template>
+          <template v-slot:item.createdAt="{ item }">
+            {{ new Date(item.createdAt).toLocaleString() }}
           </template>
         </v-data-table>
       </v-card-text>
@@ -28,45 +37,30 @@
   </v-container>
 </template>
 <script>
+import api from "../services/api";
 export default {
   data() {
     return {
-      search: '',
+      search: "",
       headers: [
-        { text: 'Moeda de Referencia', value: 'referencia', },
-        { text: 'Moeda para Cotação', value: 'cotacao' },
-        { text: 'Data de conversão', value: 'data' },
+        { text: "Moeda de Referencia", value: "referencia" },
+        { text: "Moeda para Cotação", value: "moeda" },
+        { text: "Data de conversão", value: "createdAt" },
         { text: "Informações adicionais", sortable: false, value: "info" },
       ],
-      items: [
-        {
-          id: 1,
-          referencia: 'Dolar',
-          cotacao: 'Real',
-          data: '12/12/2021-17:18'
-        },
-        {
-          id: 2,
-          referencia: 'Dolar',
-          cotacao: 'Real',
-          data: '12/12/2021-17:18'
-        },
-        {
-          id: 3,
-          referencia: 'Dolar',
-          cotacao: 'Real',
-          data: '12/12/2021-17:18'
-        },
-        {
-          id: 4,
-          referencia: 'Dolar',
-          cotacao: 'Real',
-          data: '08/12/2021-17:18'
-        }
-      ],
-    }
+      items: [],
+    };
   },
-}
+  created() {
+    this.getHistoricos().then();
+  },
+  methods: {
+    async getHistoricos() {
+      const resposta = await api.get("/historicos");
+      this.items = resposta.data;
+    },
+  },
+};
 </script>
 <style>
 </style>

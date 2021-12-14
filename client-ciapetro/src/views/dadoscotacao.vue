@@ -4,40 +4,54 @@
       <v-card-title>
         <v-row align="center">
           <v-col cols="auto">
-            <v-btn :to="{ name: 'consultarhistorico' }" outlined>Histórico</v-btn>
+            <v-btn :to="{ name: 'consultarhistorico' }" outlined
+              >Histórico</v-btn
+            >
           </v-col>
-          <v-col>Dados detalhados {{ $route.params.id }}</v-col>
+          <v-col>Dados detalhados</v-col>
         </v-row>
       </v-card-title>
       <v-card-text>
-        <v-data-table hide-default-footer :headers="headers" :items="items"></v-data-table>
+        <v-col>
+          <v-data-table :headers="headers" :items="resultados">
+            <template v-slot:item.createdAt="{ item }">
+              {{ new Date(item.createdAt).toLocaleString() }}
+            </template>
+          </v-data-table>
+        </v-col>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 <script>
+import api from "../services/api";
 export default {
   data() {
     return {
+      resultados: [],
       headers: [
-        { text: 'Moeda de Referencia', value: 'referencia', },
-        { text: 'Moeda para Cotação', value: 'cotacao' },
-        { text: 'Data de conversão', value: 'data' },
-        { text: 'Valor de referencia', value: 'valorreferencia' },
-        { text: 'Valor de conversão', value: 'valorconversao' },
+        { text: "Moeda", value: "moeda" },
+        { text: "Valor", value: "valor" },
       ],
-      items: [
-        {
-          referencia: 'Dolar',
-          cotacao: 'Real',
-          data: '12/12/2021-17:18',
-          valorreferencia: '5,5 USD',
-          valorconversao: '1,5 BRL'
-        }
-      ],
-    }
+    };
   },
-}
+
+  created() {
+    this.getHistorico().then();
+  },
+  methods: {
+    async getHistorico() {
+      const id = this.$route.params.id;
+      const resposta = await api.get(`/historico/${id}`);
+      const data = resposta.data;
+
+      this.resultados = Object.keys(data).map((key) => ({
+        moeda: key,
+        valor: data[key],
+      }));
+    },
+  },
+};
 </script>
 <style>
 </style>

@@ -14,7 +14,7 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-select
+            <v-autocomplete
               item-text="nome"
               item-value="codigo"
               :items="moedasreferencia"
@@ -24,10 +24,11 @@
               dense
               @change="converter"
               v-model="referencia"
+              :loading="loading"
             />
           </v-col>
           <v-col>
-            <v-select
+            <v-autocomplete
               item-text="nome"
               item-value="codigo"
               :items="moedasconversao"
@@ -35,19 +36,23 @@
               hide-details="auto"
               outlined
               dense
-              @change="converter"
               v-model="moedaconversao"
+              multiple
+              :loading="loading"
             />
           </v-col>
           <v-col>
-            <v-text-field
-              label="Resultado"
-              hide-details="auto"
-              :value="resultado"
-              outlined
-              dense
-              readonly
-            />
+            <v-btn @click="converter"> Converter </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              :loading="loading"
+              :headers="headers"
+              :items="resultados"
+            >
+            </v-data-table>
           </v-col>
         </v-row>
         <v-row>
@@ -72,8 +77,14 @@ export default {
       referencia: "",
       moedaconversao: "",
       moedas: [],
-      resultado: "",
+      resultados: [],
       error: "",
+      loading: false,
+
+      headers: [
+        { text: "Moeda", value: "moeda" },
+        { text: "Valor", value: "valor" },
+      ],
     };
   },
   computed: {
@@ -94,18 +105,19 @@ export default {
     },
     async converter() {
       try {
-        if (!this.referencia || !this.moedaconversao) return;
+        this.loading = true;
+        if (!this.referencia || this.moedaconversao.length === 0) return;
         const resposta = await api.get("/converter", {
           params: {
             referencia: this.referencia,
             moeda: this.moedaconversao,
           },
         });
-        this.resultado = resposta.data.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: this.moedaconversao,
-          currencyDisplay: "symbol",
-        });
+        const data = resposta.data;
+        this.resultados = Object.keys(data).map((key) => ({
+          moeda: key,
+          valor: data[key],
+        }));
         this.error = "";
       } catch (error) {
         if (error.response) {
@@ -113,6 +125,8 @@ export default {
         } else {
           this.error = "erro desconhecido";
         }
+      } finally {
+        this.loading = false;
       }
     },
   },
