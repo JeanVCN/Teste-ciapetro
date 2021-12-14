@@ -13,11 +13,7 @@
       </v-card-title>
       <v-card-text>
         <v-col>
-          <v-data-table :headers="headers" :items="resultados">
-            <template v-slot:item.createdAt="{ item }">
-              {{ new Date(item.createdAt).toLocaleString() }}
-            </template>
-          </v-data-table>
+          <v-data-table :headers="headers" :items="resultados"> </v-data-table>
         </v-col>
       </v-card-text>
     </v-card>
